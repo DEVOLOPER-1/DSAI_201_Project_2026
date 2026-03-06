@@ -68,7 +68,6 @@ class BaytSpider(scrapy.Spider):
         # Matches any href that contains "jobId=" followed by one or more digits
         job_links = response.css("a::attr(href)").re(r"/en/\w+/jobs/[\w-]+-\d+/")
 
-
         for link in set(job_links):
             absolute_url = response.urljoin(link)
             yield scrapy.Request(
