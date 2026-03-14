@@ -70,3 +70,13 @@ docker compose up -d
 ```bash
 docker exec -it pgadmin ping postgres
 ```
+
+---
+
+### Fix File Permission Issues in a Project Directory
+
+If a tool (like a formatter or linter) reports **`Permission denied (os error 13)`**, some files in the project may be owned by another user (often `root`). You can reset ownership of all files in the current directory to your current user with:
+
+```bash
+sudo chown -R $USER:$USER .
+```
