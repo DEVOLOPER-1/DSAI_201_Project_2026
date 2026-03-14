@@ -13,7 +13,6 @@ class BaytSpider(scrapy.Spider):
     # 1. SCRAPY-PLAYWRIGHT & OUTPUT SETTINGS
     # -------------------------------------------------------------------------
     custom_settings = {
-        # Route requests through Playwright instead of Scrapy's default downloader
         "DOWNLOAD_HANDLERS": {
             "http": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
             "https": "scrapy_playwright.handler.ScrapyPlaywrightDownloadHandler",
@@ -22,31 +21,33 @@ class BaytSpider(scrapy.Spider):
         "PLAYWRIGHT_BROWSER_TYPE": "chromium",
         "PLAYWRIGHT_LAUNCH_OPTIONS": {"headless": True},
         # save output to a JSON Lines file
-        "FEEDS": {
-            "raw_jobs.jsonl": {
-                "format": "jsonlines",
-                "encoding": "utf8",
-                "overwrite": True,
-            }
+        # "FEEDS": {
+        #     "raw_jobs.jsonl": {
+        #         "format": "jsonlines",
+        #         "encoding": "utf8",
+        #         "overwrite": True,
+        #     }
+        # },
+        "ITEM_PIPELINES": {
+            "crawler.pipelines.PostgresPipeline": 300,
         },
     }
 
     # -------------------------------------------------------------------------
     # 2. THE PAGE LIMITER (Lab Requirement)
     # -------------------------------------------------------------------------
-    def __init__(self, max_pages=10, *args, **kwargs):
+    def __init__(self, max_pages=1, *args, **kwargs):
         super(BaytSpider, self).__init__(*args, **kwargs)
         # Allows running: scrapy crawl bayt -a max_pages=5
         self.max_pages = int(max_pages)
         self.pages_crawled = 0
 
-    def start_requests(self):
+    async def start(self):
         url = "https://www.bayt.com/en/egypt/jobs/"
         yield scrapy.Request(
             url,
             callback=self.parse_search_page,
             meta={
-                # <-- PLAYWRIGHT WAIT FOR JS TO FINISH -->
                 "playwright_page_methods": [
                     PageMethod("wait_for_load_state", "networkidle")
                 ],
@@ -74,7 +75,12 @@ class BaytSpider(scrapy.Spider):
             yield scrapy.Request(
                 absolute_url,
                 callback=self.parse_job_listing,
-                meta={"playwright": True},
+                meta={
+                    "playwright": True,
+                    "playwright_page_methods": [
+                        PageMethod("wait_for_load_state", "networkidle")
+                    ],
+                },
             )
 
         # --- B. Pagination (The BFS Engine) ---

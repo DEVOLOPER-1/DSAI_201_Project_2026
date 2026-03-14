@@ -78,7 +78,7 @@ DOWNLOADER_MIDDLEWARES = {
     "crawler.middlewares.RotateBrowserHeadersMiddleware": 400,
 }
 
-
+# https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "crawler.pipelines.PostgresPipeline": 300,
 }

@@ -1,7 +1,4 @@
-import ollama
-
-
-MODEL = "qwen2.5-coder:latest" #nuextract:latest , qwen2.5-coder:latest
+MODEL = "qwen2.5-coder:latest"  # nuextract:latest , qwen2.5-coder:latest
 MAX_CHARS = 7000  # truncation limit — stays within context window
 KEEP_ALIVE = "10m"  # keep model hot between calls
 
