@@ -33,7 +33,7 @@ class BaytSpider(scrapy.Spider):
     # -------------------------------------------------------------------------
     # 2. THE PAGE LIMITER (Lab Requirement)
     # -------------------------------------------------------------------------
-    def __init__(self, max_pages=3, *args, **kwargs):
+    def __init__(self, max_pages=10, *args, **kwargs):
         super(BaytSpider, self).__init__(*args, **kwargs)
         # Allows running: scrapy crawl bayt -a max_pages=5
         self.max_pages = int(max_pages)
@@ -82,6 +82,9 @@ class BaytSpider(scrapy.Spider):
             next_page_link = (
                 response.css("a[data-js='next-page']::attr(href)").get()
                 or response.css(".pagination .next a::attr(href)").get()
+                or response.css(
+                    "#pagination > li.pagination-next > a::attr(href)"
+                ).get()
             )
 
             if next_page_link:
