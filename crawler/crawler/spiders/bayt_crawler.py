@@ -6,6 +6,7 @@ from scrapy_playwright.page import PageMethod
 
 class BaytSpider(scrapy.Spider):
     name = "bayt"
+    platform_id = "bayt"
     allowed_domains = ["bayt.com"]
 
     # -------------------------------------------------------------------------

@@ -77,3 +77,8 @@ DOWNLOADER_MIDDLEWARES = {
     # Enable our custom rotating middleware (Lower number = executes earlier)
     "crawler.middlewares.RotateBrowserHeadersMiddleware": 400,
 }
+
+
+ITEM_PIPELINES = {
+    "crawler.pipelines.PostgresPipeline": 300,
+}
